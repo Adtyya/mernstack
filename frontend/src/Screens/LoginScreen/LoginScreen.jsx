@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import MainScreen from "../../Components/MainScreen";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import Loading from "../../Components/Loading";
 import ErrorMsg from "../../Components/ErrorMsg";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../actions/userAction";
 
 const LoginScreen = () => {
-  const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const isUserLogin = useSelector((state) => state.userLogin);
+  const { loadingLogin, error, userInfo } = isUserLogin;
+  const navigate = useNavigate();
 
   const handleInput = (e) => {
     setForm((prev) => ({
@@ -21,35 +23,20 @@ const LoginScreen = () => {
       [e.target.name]: e.target.value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      setLoading(true);
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
-      const res = await axios.post("/api/user/login", form, config);
-      console.log(res.data);
-      localStorage.setItem("userInfo", JSON.stringify(res.data));
-      setForm({ email: "", password: "" });
-      navigate("/mynotes");
-    } catch (error) {
-      setError(error.response.data.message);
-    } finally {
-      setLoading(false);
-    }
+    dispatch(login(form.email, form.password));
   };
 
   return (
     <MainScreen title="Login">
       <div className="control__container">
         {error && <ErrorMsg variant="danger">{error}</ErrorMsg>}
-        {loading && <Loading />}
+        {loadingLogin && <Loading />}
         <Form onSubmit={handleSubmit}>
+          <Form.Label>Email</Form.Label>
           <Form.Group controlId="formBasicEmail">
-            <Form.Label>Email</Form.Label>
             <Form.Control
               type="text"
               name="email"
@@ -71,6 +58,7 @@ const LoginScreen = () => {
           <Button variant="primary" className="my-3" type="submit">
             Login
           </Button>
+          <Button onClick={() => console.log(loadingLogin)}>Check</Button>
           <Row className="py-3">
             <Col>
               New here? Register{" "}

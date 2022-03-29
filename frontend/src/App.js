@@ -1,25 +1,42 @@
 import Header from "./Components/Header/Header";
 import Footer from "./Components/Footer/Footer";
 import LandingPage from "./Screens/LandingPage/LandingPage";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import MyNotes from "./Screens/MyNotes/MyNotes";
+import CreateNote from "./Screens/MyNotes/CreateNote";
 import LoginScreen from "./Screens/LoginScreen/LoginScreen";
 import RegisterScreen from "./Screens/RegisterScreen/RegisterScreen";
+import { useSelector } from "react-redux";
+import DetailNote from "./Screens/detail/DetailNote";
 
 function App() {
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   return (
-    <BrowserRouter>
+    <>
       <Header />
       <main>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginScreen />} />
-          <Route path="/register" element={<RegisterScreen />} />
-          <Route path="/mynotes" element={<MyNotes />} />
+          <Route path="/" exact element={<LandingPage />} />
+          {!userInfo && (
+            <>
+              <Route path="/login" element={<LoginScreen />} />
+              <Route path="/register" element={<RegisterScreen />} />
+            </>
+          )}
+          {userInfo && (
+            <>
+              <Route path="/mynotes" element={<MyNotes />} />
+              <Route path="/createnote" element={<CreateNote />} />
+              <Route path="/note/:id" element={<DetailNote />} />
+            </>
+          )}
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
       <Footer />
-    </BrowserRouter>
+    </>
   );
 }
 

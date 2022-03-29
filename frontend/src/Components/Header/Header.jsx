@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Form,
@@ -7,9 +7,30 @@ import {
   Navbar,
   NavDropdown,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../actions/userAction";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state.userLogin);
+  const { userInfo } = state;
+  const [auth, setAuth] = useState(true);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+  const checkUser = localStorage.getItem("userInfo");
+
+  useEffect(() => {
+    if (!userInfo || !checkUser) {
+      setAuth(false);
+    } else {
+      setAuth(true);
+    }
+  }, [userInfo, checkUser]);
   return (
     <Navbar bg="primary" expand="lg" variant="dark">
       <Container>
@@ -20,28 +41,39 @@ const Header = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
-          <Nav className="m-auto">
-            <Form className="d-flex">
-              <FormControl
-                type="search"
-                placeholder="Search"
-                className="me-2"
-                aria-label="Search"
-              />
-            </Form>
-          </Nav>
-          <Nav style={{ maxHeight: "100px" }} navbarScroll>
-            <Nav.Link>
-              <Link to="/mynotes" className="text-light">
-                Notes
-              </Link>
-            </Nav.Link>
-            <NavDropdown title="Mr john" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="#action3">My profile</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">log out</NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
+          {userInfo && (
+            <Nav className="m-auto">
+              <Form className="d-flex">
+                <FormControl
+                  type="search"
+                  placeholder="Search"
+                  className="me-2"
+                  aria-label="Search"
+                />
+              </Form>
+            </Nav>
+          )}
+          {auth ? (
+            <Nav style={{ maxHeight: "100px" }} navbarScroll>
+              <Nav.Link>
+                <Link to="/mynotes" className="text-light">
+                  Notes
+                </Link>
+              </Nav.Link>
+              <NavDropdown
+                title={userInfo && `${userInfo.name}`}
+                id="navbarScrollingDropdown"
+              >
+                <NavDropdown.Item href="#action3">My profile</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item onClick={handleLogout}>
+                  log out
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          ) : (
+            <></>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>

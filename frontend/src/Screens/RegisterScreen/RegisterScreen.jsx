@@ -1,72 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import MainScreen from "../../Components/MainScreen";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ErrorMsg from "../../Components/ErrorMsg";
-import axios from "axios";
 import Loading from "../../Components/Loading";
+import { useDispatch, useSelector } from "react-redux";
+import { regist } from "../../actions/userAction";
 
 const RegisterScreen = () => {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-  const [picture, setPicture] = useState({
-    picture: "",
-  });
-  //"https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
   const [message, setMessage] = useState(null);
-  const [picMsg, setPicMsg] = useState(null);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const handleInput = (event) => {
-    setForm((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }));
-  };
+  const [file, setFile] = useState(null);
+  const [succes, setSucces] = useState(null);
 
+  const dispatch = useDispatch();
+  const register = useSelector((state) => state.userRegister);
+  const { loading, error, userInfo } = register;
+  const defaultPict =
+    "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg";
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-      },
-    };
-    // const merged = { ...form, ...picture };
-    // if (form.password != confirmPass) {
-    //   setMessage("Password doesnt match!");
-    // }
-    // if (form.password == confirmPass) {
-    //   setLoading(true);
-    //   setMessage(null);
-    //   try {
-    //     await axios.post("/api/user", merged, config);
-    //   } catch (error) {
-    //     console.log(error);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // }
-  };
-
-  const postPicture = async (pics) => {
-    if (!pics) {
-      setPicMsg("Please select an image!");
+    if (password !== confirmPass) {
+      setMessage("Password doesnt match!");
     }
-    setPicMsg(null);
-    const data = new FormData();
-    data.append("file", pics);
-    data.append("upload_preset", "mern_noteszipper");
-    data.append("cloud_name", "dmz19yaoz");
-
-    // const res = await axios.post(
-    //   "https://api.cloudinary.com/v1_1/dmz19yaoz/upload",
-    //   data
-    // );
-    // const showres = res.data;
+    if (password === confirmPass) {
+      dispatch(regist(name, email, password, file, defaultPict, setSucces));
+    }
+    console.log(userInfo);
   };
 
   return (
@@ -74,6 +37,12 @@ const RegisterScreen = () => {
       {" "}
       <div className="control__container">
         {message && <ErrorMsg variant="danger">{message}</ErrorMsg>}
+        {error && <ErrorMsg variant="warning">{error}</ErrorMsg>}
+        {succes && (
+          <ErrorMsg variant="success">
+            {succes} Login <Link to="/login">here</Link>
+          </ErrorMsg>
+        )}
         {loading && <Loading />}
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="formBasicEmail">
@@ -82,8 +51,8 @@ const RegisterScreen = () => {
               type="text"
               name="name"
               placeholder="John doe"
-              onChange={handleInput}
-              value={form.name}
+              onChange={(e) => setName(e.target.value)}
+              value={name}
             />
           </Form.Group>
           <Form.Group controlId="formBasicEmail">
@@ -92,8 +61,8 @@ const RegisterScreen = () => {
               type="text"
               name="email"
               placeholder="user@user.com"
-              onChange={handleInput}
-              value={form.email}
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
             />
           </Form.Group>
           <Form.Group controlId="formBasicPassword">
@@ -102,8 +71,8 @@ const RegisterScreen = () => {
               type="password"
               name="password"
               placeholder="*********"
-              onChange={handleInput}
-              value={form.password}
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
             />
           </Form.Group>
           <Form.Group controlId="confirmPassword">
@@ -116,16 +85,26 @@ const RegisterScreen = () => {
             />
           </Form.Group>
           <Form.Group controlId="formBasicFile">
-            <Form.Label>Profile picture</Form.Label>
+            <Form.Label>
+              Profile picture <span className="text-muted"> *Optional</span>
+            </Form.Label>
             <Form.Control
               type="file"
               name="picture"
-              onChange={handleSubmit}
+              onChange={(e) => setFile(e.target.files[0])}
               accept="image/*"
             />
           </Form.Group>
           <Button variant="primary" className="my-3" type="submit">
             Register
+          </Button>
+          <Button
+            variant="primary"
+            className="my-3"
+            type="button"
+            onClick={() => console.log(error)}
+          >
+            check
           </Button>
           <Row className="py-3">
             <Col>
