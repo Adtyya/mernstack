@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MainScreen from "../../Components/MainScreen";
 import { Button, Form } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { postNotes } from "../../actions/noteAction";
 import { useNavigate } from "react-router-dom";
 
@@ -12,15 +12,22 @@ const CreateNote = () => {
 
   const dispatch = useDispatch();
 
+  const checkNotePost = useSelector((state) => state.createNote);
+  const { success } = checkNotePost;
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title || !content) return;
     dispatch(postNotes(title, content));
     setTitle("");
     setContent("");
-    navigate("/mynotes");
   };
 
+  useEffect(() => {
+    if (success) {
+      navigate("/mynotes");
+    }
+  }, [success, navigate]);
   return (
     <MainScreen title="Create new notes">
       <Form onSubmit={handleSubmit}>

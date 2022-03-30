@@ -33,6 +33,10 @@ const userSchema = mongoose.Schema(
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
+    idPicture: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,

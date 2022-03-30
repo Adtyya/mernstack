@@ -3,6 +3,7 @@ import {
   NOTES_CREATE_REQUEST,
   NOTES_CREATE_SUCCESS,
   NOTES_DELETE_FAIL,
+  NOTES_DELETE_MSG,
   NOTES_DELETE_REQUEST,
   NOTES_DELETE_SUCCESS,
   NOTES_LIST_FAIL,
@@ -90,6 +91,11 @@ export const deleteNotesReducer = (state = {}, action) => {
       return {
         loading: false,
         isSuccess: true,
+      };
+    case NOTES_DELETE_MSG:
+      return {
+        isSuccess: false,
+        loading: false,
       };
     case NOTES_DELETE_FAIL:
       return {

@@ -64,7 +64,9 @@ const Header = () => {
                 title={userInfo && `${userInfo.name}`}
                 id="navbarScrollingDropdown"
               >
-                <NavDropdown.Item href="#action3">My profile</NavDropdown.Item>
+                <NavDropdown.Item href="#action3">
+                  <Link to="/profile">My profile</Link>
+                </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={handleLogout}>
                   log out

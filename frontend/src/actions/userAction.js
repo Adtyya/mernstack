@@ -66,9 +66,11 @@ export const regist =
             password: password,
             email: email,
             picture: res.data.url.toString(),
+            idPicture: res.data.public_id,
           },
           config
         );
+        console.log(res.data.public_id);
         dispatch({ type: USER_REGIST_SUCCESS, payload: isRegist.data });
       }
       if (!file) {
@@ -95,3 +97,37 @@ export const regist =
       });
     }
   };
+
+// export const updateUser =
+//   (name, email, password, file) => async (dispatch, getState) => {
+//     try {
+//       dispatch({ type: NOTES_UPDATE_REQUEST });
+//       const {
+//         userLogin: { userInfo },
+//       } = getState();
+//       const form = new Formform();
+//       form.append("file", file);
+//       form.append("upload_preset", "mern_noteszipper");
+//       form.append("cloud_name", "dmz19yaoz");
+//       if (file) {
+//         const res = await axios.post(
+//           "https://api.cloudinary.com/v1_1/dmz19yaoz/upload",
+//           data
+//         );
+//         const config = {
+//           headers: {
+//             "Content-type": "application/json",
+//             Authorization: `Bearer ${userInfo.token}`,
+//           },
+//         };
+//         const value = {
+//           name: name,
+//           email: email,
+//           password: password,
+//           picture: res.data.url.toString(),
+//         };
+//         const { data } = await axios.put(`/api/notes/${id}`, value, config);
+//         dispatch({ type: NOTES_UPDATE_SUCCESSS, payload: data });
+//       }
+//     } catch (error) {}
+//   };

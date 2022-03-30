@@ -29,7 +29,6 @@ const RegisterScreen = () => {
     if (password === confirmPass) {
       dispatch(regist(name, email, password, file, defaultPict, setSucces));
     }
-    console.log(userInfo);
   };
 
   return (

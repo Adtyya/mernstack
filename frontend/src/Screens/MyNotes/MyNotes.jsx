@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import MainScreen from "../../Components/MainScreen";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button, Card, Accordion } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { listNotes, deleteNotes } from "../../actions/noteAction";
@@ -8,12 +8,12 @@ import Loading from "../../Components/Loading";
 import ErrorMsg from "../../Components/ErrorMsg";
 import {
   NOTES_CREATE_REQUEST,
+  NOTES_DELETE_MSG,
   NOTES_DELETE_REQUEST,
 } from "../../Constant/notesConstant";
 
 const MyNotes = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const noteList = useSelector((state) => state.noteList);
   const { loading, notes, error } = noteList;
@@ -39,16 +39,11 @@ const MyNotes = () => {
   };
 
   useEffect(() => {
-    const getNotes = () => dispatch(listNotes());
-    getNotes();
+    dispatch(listNotes());
   }, [dispatch, isSuccess]);
 
   const handleRemove = (id) => {
     dispatch(deleteNotes(id));
-    if (isSuccess) {
-      window.location.reload();
-    }
-    dispatch({ type: NOTES_DELETE_REQUEST });
   };
 
   return (
@@ -62,7 +57,6 @@ const MyNotes = () => {
         </ErrorMsg>
       )}
       {loading && <Loading />}
-      {isSuccess && <ErrorMsg variant="success">Successfully deleted</ErrorMsg>}
       {success && successMsg()}
       {notes?.map((note) => (
         <Accordion key={note._id}>
