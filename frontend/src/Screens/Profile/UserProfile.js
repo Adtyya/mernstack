@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import MainScreen from "../../Components/MainScreen";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "../../actions/userAction";
+import ErrorMsg from "../../Components/ErrorMsg";
 
 const UserProfile = () => {
   const [name, setName] = useState("");
@@ -9,6 +11,7 @@ const UserProfile = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [picture, setPicture] = useState("");
+  const [idPicture, setIdPict] = useState("");
   const [file, setFile] = useState("");
   const [error, setError] = useState(null);
 
@@ -26,23 +29,30 @@ const UserProfile = () => {
         }, 3000);
       }
     }
-    dispatch();
+    dispatch(updateUser(name, email, password, file, idPicture));
   };
 
   useEffect(() => {
     setName(userInfo.name);
     setEmail(userInfo.email);
     setPicture(userInfo.picture);
-  }, [file]);
+    setIdPict(userInfo.idPicture);
+  }, [file, userInfo]);
 
   return (
     <MainScreen title="EDIT PROFILE">
       <Row className="profileContainer">
         <Col md={6}>
+          {error && <ErrorMsg variant="warning">{error}</ErrorMsg>}
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="name">
               <Form.Label>Name</Form.Label>
-              <Form.Control type="text" placeholder="Enter Name" value={name} />
+              <Form.Control
+                type="text"
+                placeholder="Enter Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </Form.Group>
             <Form.Group controlId="email">
               <Form.Label>Email Address</Form.Label>
@@ -50,6 +60,7 @@ const UserProfile = () => {
                 type="email"
                 placeholder="Enter Email"
                 value={email}
+                onChange={(e) => setEmail(e.target.value)}
               ></Form.Control>
             </Form.Group>
             <Form.Group controlId="password">

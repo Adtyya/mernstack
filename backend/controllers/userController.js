@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs/dist/bcrypt");
 const generateToken = require("../utils/generateToken");
+const cloudinary = require("cloudinary").v2;
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, picture, idPicture } = req.body;
@@ -57,12 +58,23 @@ const authUser = asyncHandler(async (req, res) => {
 });
 
 const updateUser = asyncHandler(async (req, res) => {
+  cloudinary.config({
+    cloud_name: "dmz19yaoz",
+    api_key: "472581828874271",
+    api_secret: "f8aL0GHklSBkiYy40J1LKbCUiXY",
+  });
+
   const user = await User.findById(req.user._id);
+  const { currentPicture } = req.body;
+
   if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
-    user.picture = req.body.picture || user.picture;
-    user.idPicture = req.body.findById || user.idPicture;
+    if (currentPicture) {
+      cloudinary.uploader.destroy(currentPicture);
+      user.picture = req.body.picture || user.picture;
+      user.idPicture = req.body.idPicture || user.idPicture;
+    }
     if (req.body.password) {
       user.password = req.body.password;
     }

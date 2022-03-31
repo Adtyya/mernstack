@@ -41,18 +41,6 @@ const Header = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
-          {userInfo && (
-            <Nav className="m-auto">
-              <Form className="d-flex">
-                <FormControl
-                  type="search"
-                  placeholder="Search"
-                  className="me-2"
-                  aria-label="Search"
-                />
-              </Form>
-            </Nav>
-          )}
           {auth ? (
             <Nav style={{ maxHeight: "100px" }} navbarScroll>
               <Nav.Link>
