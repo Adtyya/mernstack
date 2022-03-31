@@ -28,8 +28,13 @@ const UserProfile = () => {
           setError(null);
         }, 3000);
       }
+      if (password === confirmPassword) {
+        dispatch(updateUser(name, email, password, file, idPicture));
+      }
     }
-    dispatch(updateUser(name, email, password, file, idPicture));
+    if (!password) {
+      dispatch(updateUser(name, email, password, file, idPicture));
+    }
   };
 
   useEffect(() => {
