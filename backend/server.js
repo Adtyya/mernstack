@@ -22,10 +22,10 @@ if (process.env.NODE_ENV === "production") {
     res.send(path.resolve(__dirname, "frontend", "build", "index.html"));
   });
 } else {
+  app.get("/", (req, res) => {
+    res.send("Server is running ...");
+  });
 }
-app.get("/", (req, res) => {
-  res.send("Server is running ...");
-});
 
 app.use(notFound);
 app.use(errorHandler);
